@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Midtrans Test - No CORS Issue</title>
+    <title>Midtrans Test API</title>
     <script src="config.js"></script>
     <script>
         const snapScript = document.createElement("script");
@@ -36,7 +36,7 @@
 </head>
 
 <body>
-    <h1>🧪 Midtrans Test - No CORS</h1>
+    <h1>Midtrans API - Karya Data</h1>
 
     <div class="max-w-xs rounded-2xl overflow-hidden shadow-lg bg-white">
         <div class="flex justify-center m-5">
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div id="result">
+    <div id="result" class="max-w-xs mt-4 rounded-2xl text-center">
     </div>
 
     <script>
@@ -69,7 +69,8 @@
         async function createPayment(amount) {
             const result = document.getElementById('result');
 
-            result.innerHTML = 'Membuat Transaksi';
+            // result.innerHTML = 'Membuat Transaksi';
+            result.innerHTML = '<div class="max-w-xs mt-4 rounded-2xl text-center bg-green-100">`Membuat transaksi`</div>';
 
             try {
                 const orderId = 'TEST_' + Date.now();
