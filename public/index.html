@@ -2,9 +2,11 @@
 <html>
 
 <head>
-    <title>Midtrans Test - No CORS Issue</title>
+    <title>Midtrans Test API</title>
+    <!-- Load Snap.js dengan client key dari environment -->
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-        data-client-key="Mid-client-oAs8x_AcQLaRYsXD"></script>
+        data-client-key="<%= process.env.MIDTRANS_CLIENT_KEY %>">
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
@@ -31,13 +33,13 @@
 </head>
 
 <body>
-    <h1>🧪 Midtrans Test - No CORS</h1>
+    <h1 class="text-2xl font-bold mb-4">Midtrans API - Karya Data</h1>
 
     <div class="max-w-xs rounded-2xl overflow-hidden shadow-lg bg-white">
         <div class="flex justify-center m-5">
             <img class="w-40"
                 src="https://www.az-delivery.de/cdn/shop/products/esp32-nodemcu-module-wlan-wifi-development-board-mit-cp2102-nachfolgermodell-zum-esp8266-kompatibel-mit-arduino-872375.jpg?v=1679400491"
-                alt="Product Image" class="w-full h-48 object-cover" />
+                alt="Product Image" />
         </div>
         <div class="bg-sky-100">
             <div class="text-center">
@@ -53,57 +55,34 @@
         </div>
     </div>
 
-    <div id="result"></div>
-    <div id="debug" style="margin-top: 20px; padding: 15px; background: #f0f0f0;"></div>
+    <div id="result" class="max-w-xs mt-4 rounded-2xl text-center"></div>
 
     <script>
-        // GANTI dengan credentials Anda
-        const SERVER_KEY = 'Mid-server-vPNbaSeO5J4kmzQ5iEu91J3M';
-        const CLIENT_KEY = 'Mid-client-oAs8x_AcQLaRYsXD';
-
         async function createPayment(amount) {
-            const debug = document.getElementById('debug');
             const result = document.getElementById('result');
-
-            debug.innerHTML = '🔄 Creating transaction...';
-            result.innerHTML = '';
+            result.innerHTML = '<div class="bg-blue-100 p-3 rounded">Membuat transaksi...</div>';
 
             try {
                 const orderId = 'TEST_' + Date.now();
 
-                debug.innerHTML = `Order ID: ${orderId}<br>Amount: ${amount}`;
-
-                // Use Cors helper
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                const targetUrl = 'https://app.sandbox.midtrans.com/snap/v1/transactions';
-
-                const response = await fetch(proxyUrl + targetUrl, {
+                // Panggil API kita sendiri
+                const response = await fetch('/api/transaction', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa(SERVER_KEY + ':')
+                        accept: 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        transaction_details: {
-                            order_id: orderId,
-                            gross_amount: amount
-                        },
-                        enabled_payments: ["credit_card", "permata_va",
-                            "bca_va", "bni_va", "bri_va",
-                            "other_qris"],
-                        credit_card: {
-                            secure: true
-                        }
+                        amount: amount,
+                        order_id: orderId
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-                }
-
                 const data = await response.json();
 
-                debug.innerHTML += `<br>✅ Token received!`;
+                if (!data.success) {
+                    throw new Error(data.error);
+                }
 
                 // Tampilkan Snap Popup
                 window.snap.pay(data.token, {
@@ -122,18 +101,10 @@
                 });
 
             } catch (error) {
-                debug.innerHTML = '❌ Error: ' + error.message;
-                result.innerHTML = '<div class="error">Failed: ' + error.message + '</div>';
+                result.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
                 console.error('Payment Error:', error);
             }
         }
-
-        // Test koneksi sederhana
-        window.onload = function () {
-            document.getElementById('debug').innerHTML =
-                '✅ Page loaded!<br>Client Key: ' + (CLIENT_KEY ? 'Set' : 'NOT SET') +
-                '<br>Server Key: ' + (SERVER_KEY ? 'Set' : 'NOT SET');
-        };
     </script>
 </body>
 

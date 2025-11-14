@@ -1,0 +1,14 @@
+{
+  "name": "midtrans-app",
+  "version": "1.0.0",
+  "description": "Midtrans Payment Integration",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "midtrans-client": "^1.3.1"
+  },
+  "engines": {
+    "node": "18.x || 20.x || 22.x" 
+  }
+}
