@@ -4,7 +4,12 @@
 <head>
     <title>Midtrans Test - No CORS Issue</title>
     <script src="config.js"></script>
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key=""></script>
+    <script>
+        const snapScript = document.createElement("script");
+        snapScript.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+        snapScript.setAttribute("data-client-key", window.env.CLIENT_KEY);
+        document.head.appendChild(snapScript);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
@@ -58,8 +63,8 @@
 
     <script>
         // GANTI dengan credentials Anda
-        const SERVER_KEY = window.env.SECRET_CODE;
-        const CLIENT_KEY = 'Mid-client-oAs8x_AcQLaRYsXD';
+        const SERVER_KEY = window.env.SERVER_KEY;
+        const CLIENT_KEY = window.env.CLIENT_KEY;
 
         async function createPayment(amount) {
             const result = document.getElementById('result');
