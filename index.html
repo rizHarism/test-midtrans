@@ -3,8 +3,8 @@
 
 <head>
     <title>Midtrans Test - No CORS Issue</title>
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-        data-client-key="Mid-client-oAs8x_AcQLaRYsXD"></script>
+    <script src="config.js"></script>
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key=""></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
@@ -58,7 +58,7 @@
 
     <script>
         // GANTI dengan credentials Anda
-        const SERVER_KEY = 'Mid-server-vPNbaSeO5J4kmzQ5iEu91J3M';
+        const SERVER_KEY = window.env.SECRET_CODE;
         const CLIENT_KEY = 'Mid-client-oAs8x_AcQLaRYsXD';
 
         async function createPayment(amount) {
@@ -70,7 +70,6 @@
                 const orderId = 'TEST_' + Date.now();
 
                 // Use Cors helper
-                // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
                 const targetUrl = 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
                 const response = await fetch(targetUrl, {
