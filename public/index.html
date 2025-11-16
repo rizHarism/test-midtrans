@@ -63,9 +63,9 @@
             result.innerHTML = '<div class="bg-blue-100 p-3 rounded">Membuat transaksi...</div>';
 
             try {
-                const orderId = 'TEST_' + Date.now();
+                const orderId = 'ORDER-_' + Date.now();
 
-                // Panggil API kita sendiri
+                // Panggil API sendiri sendiri > mengarah ke file api/transaction.js
                 const response = await fetch('/api/transaction', {
                     method: 'POST',
                     headers: {
@@ -89,6 +89,7 @@
                     onSuccess: function (result) {
                         document.getElementById('result').innerHTML =
                             '<div class="success">✅ PAYMENT SUCCESS!<br>Order ID: ' + result.order_id + '</div>';
+                        sendToMQTT()
                     },
                     onPending: function (result) {
                         document.getElementById('result').innerHTML =
@@ -105,6 +106,33 @@
                 console.error('Payment Error:', error);
             }
         }
+
+        async function sendToMQTT() {
+            try {
+                const response = await fetch('/api/notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        payment: "success",
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Payment berhasil! ESP32 notified.');
+                    console.log('MQTT triggered');
+                } else {
+                    alert('Payment success but ESP32 notification failed');
+                }
+            } catch (error) {
+                console.error('Error triggering MQTT:', error);
+                alert('Payment success but ESP32 notification failed');
+            }
+        }
+
     </script>
 </body>
 

@@ -1,7 +1,7 @@
 const midtransClient = require("midtrans-client");
 
 module.exports = async (req, res) => {
-  // Set CORS headers
+  // Set CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
