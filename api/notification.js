@@ -26,9 +26,11 @@ module.exports = async (req, res) => {
       client.on("connect", function () {
         console.log("✅ MQTT Connected");
 
-        const message = JSON.stringify({
-          payment,
-        });
+        // const message = JSON.stringify({
+        //   payment,
+        // });
+
+        const message = "payment_success";
 
         client.publish("mid/payment", message, { qos: 1 }, (err) => {
           if (err) {
@@ -53,5 +55,7 @@ module.exports = async (req, res) => {
       console.error("Error:", error);
       res.status(500).json({ error: error.message });
     }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
 };
