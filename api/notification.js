@@ -26,13 +26,9 @@ module.exports = async (req, res) => {
       client.on("connect", function () {
         console.log("✅ MQTT Connected");
 
-        // const message = JSON.stringify({
-        //   payment,
-        // });
-
         const message = "payment_success";
 
-        client.publish("mid/payment", message, { qos: 1 }, (err) => {
+        client.publish("mqtt-unisba", message, { qos: 1 }, (err) => {
           if (err) {
             console.error("Publish error:", err);
             res.status(500).json({ error: "MQTT failed" });

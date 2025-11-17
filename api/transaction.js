@@ -28,14 +28,7 @@ module.exports = async (req, res) => {
         credit_card: {
           secure: true,
         },
-        enabled_payments: [
-          "credit_card",
-          "permata_va",
-          "bca_va",
-          "bni_va",
-          "bri_va",
-          "other_qris",
-        ],
+        enabled_payments: ["bri_va", "bca_va", "gopay"],
       };
 
       const transaction = await snap.createTransaction(parameter);
