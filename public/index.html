@@ -85,6 +85,8 @@
         }
 
         async function sendToMQTT(statusPayment) {
+            document.getElementById('esp-notif').innerHTML =
+                `<div class="bg-blue-100 p-3 rounded">Mengirim notifikasi...</div>`;
             try {
                 const response = await fetch('/api/notification', {
                     method: 'POST',
