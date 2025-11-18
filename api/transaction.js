@@ -36,7 +36,6 @@ module.exports = async (req, res) => {
       res.status(200).json({
         success: true,
         token: transaction.token,
-        redirect_url: transaction.redirect_url,
       });
     } catch (error) {
       console.error("Midtrans Error:", error);

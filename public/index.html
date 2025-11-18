@@ -8,32 +8,10 @@
         data-client-key="<%= process.env.MIDTRANS_CLIENT_KEY %>">
         </script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        body {
-            font-family: Arial;
-            margin: 40px;
-        }
-
-        .result {
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-        }
-    </style>
 </head>
 
-<body>
-    <h1 class="text-2xl font-bold mb-4">Midtrans API - Karya Data</h1>
+<body class="m-10">
+    <h1 class="text-2xl font-bold mb-4 ms-3">Midtrans API - Karya Data</h1>
 
     <div class="max-w-xs rounded-2xl overflow-hidden shadow-lg bg-white">
         <div class="flex justify-center m-5">
@@ -56,14 +34,17 @@
     </div>
 
     <div id="result" class="max-w-xs mt-4 rounded-2xl text-center"></div>
+    <div id="esp-notif" class="max-w-xs mt-4 rounded-2xl text-center"></div>
 
     <script>
         async function createPayment(amount) {
+            document.getElementById('esp-notif').innerHTML =
+                '';
             const result = document.getElementById('result');
             result.innerHTML = '<div class="bg-blue-100 p-3 rounded">Membuat transaksi...</div>';
 
             try {
-                const orderId = 'ORDER-_' + Date.now();
+                const orderId = 'ORDER-' + Date.now();
 
                 // Panggil API sendiri sendiri > mengarah ke file api/transaction.js
                 const response = await fetch('/api/transaction', {
@@ -88,17 +69,13 @@
                 window.snap.pay(data.token, {
                     onSuccess: function (result) {
                         document.getElementById('result').innerHTML =
-                            '<div class="success">✅ PAYMENT SUCCESS!<br>Order ID: ' + result.order_id + '</div>';
-                        sendToMQTT()
+                            '<div class="bg-green-100 p-3 rounded"> Pembayaran Success<br>Order ID: ' + result.order_id + '</div>';
+                        sendToMQTT("success")
                     },
                     onPending: function (result) {
                         document.getElementById('result').innerHTML =
-                            '<div class="success">⏳ PAYMENT PENDING<br>Order ID: ' + result.order_id + '</div>';
+                            '<div class="bg-orange-100 p-3 rounded"> Pembayaran Pending!<br>Order ID: ' + result.order_id + '</div>';
                     },
-                    onError: function (result) {
-                        document.getElementById('result').innerHTML =
-                            '<div class="error">❌ PAYMENT FAILED<br>Order ID: ' + result.order_id + '</div>';
-                    }
                 });
 
             } catch (error) {
@@ -107,7 +84,7 @@
             }
         }
 
-        async function sendToMQTT() {
+        async function sendToMQTT(statusPayment) {
             try {
                 const response = await fetch('/api/notification', {
                     method: 'POST',
@@ -115,17 +92,20 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        payment: "success",
+                        payment: statusPayment,
                     })
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Payment berhasil! ESP32 notified.');
+                    document.getElementById('esp-notif').innerHTML =
+                        `<div class="bg-blue-100 p-3 rounded">${result.message}</div>`;
                     console.log('MQTT triggered');
                 } else {
-                    alert('Payment success but ESP32 notification failed');
+                    document.getElementById('esp-notif').innerHTML =
+                        `<div class="bg-red-100 p-3 rounded">${result.message}</div>`;
+                    console.log('MQTT triggered');
                 }
             } catch (error) {
                 console.error('Error triggering MQTT:', error);

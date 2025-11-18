@@ -24,19 +24,19 @@ module.exports = async (req, res) => {
       const client = mqtt.connect(MQTT_CONFIG);
 
       client.on("connect", function () {
-        console.log("✅ MQTT Connected");
+        console.log("MQTT Tersambung");
 
-        const message = "payment_success";
+        const message = payment;
 
         client.publish("mqtt-unisba", message, { qos: 1 }, (err) => {
           if (err) {
             console.error("Publish error:", err);
             res.status(500).json({ error: "MQTT failed" });
           } else {
-            console.log("✅ Payment success published:", message);
+            console.log("Notifikasi pembayaran berhasil di publish:", message);
             res.status(200).json({
               success: true,
-              message: "Payment processed and sent to ESP32",
+              message: "Notifikasi Terkirim ke ESP32",
             });
           }
           client.end();
@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
 
       client.on("error", function (err) {
         console.error("MQTT error:", err);
-        res.status(500).json({ error: "MQTT connection failed" });
+        res.status(500).json({ error: "Notifikasi Terkirim ke ESP32" });
       });
     } catch (error) {
       console.error("Error:", error);
