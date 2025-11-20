@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
         credit_card: {
           secure: true,
         },
-        enabled_payments: ["bri_va", "bca_va", "gopay"],
+        enabled_payments: ["bri_va", "bca_va", "gopay", "shopeepay"],
       };
 
       const transaction = await snap.createTransaction(parameter);
